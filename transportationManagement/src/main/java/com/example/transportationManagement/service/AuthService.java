@@ -10,17 +10,16 @@ import com.example.transportationManagement.repository.UserRepository;
 import com.example.transportationManagement.security.AuthUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
-//import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class AuthService {
     private  final AuthenticationManager authenticationManager;
     private final AuthUtil authUtil;
@@ -39,21 +38,29 @@ public class AuthService {
     }
 
     public User signUpInternal(SignupRequest signupRequestDto){
+
         User user=  userRepository.findByEmail(signupRequestDto.getEmail()).orElse(null);
-        if(user!= null) throw new IllegalArgumentException("user already exist..!!");
 
+        if(user != null) {
+            System.out.println("fgggggggggggggggg"+user);
+            throw new BadCredentialsException("user already exist..!!");
+        }
 
-        user= User.builder()
+        user = User.builder()
                 .name(signupRequestDto.getName())
                 .email(signupRequestDto.getEmail())
                 .role(Role.valueOf(signupRequestDto.getRole()))
                 .phone(signupRequestDto.getPhone())
+                .password(passwordEncoder.encode(signupRequestDto.getPassword()))
                 .build();
 
-//        if(authProviderType == AuthProviderType.EMAIL){
-            user.setPassword(passwordEncoder.encode(signupRequestDto.getPassword()));
-//        }
+        System.out.println("Before save, user id: " + user.getId());
+        user = userRepository.saveAndFlush(user);
+        System.out.println("After save, user id: " + user.getId());
 
+//        if(authProviderType == AuthProviderType.EMAIL){
+//            user.setPassword(passwordEncoder.encode(signupRequestDto.getPassword()));
+//        }
         return user;
     }
 

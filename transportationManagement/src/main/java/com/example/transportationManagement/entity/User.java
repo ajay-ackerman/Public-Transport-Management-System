@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.*;
 
+@ToString
 @Entity
 @Table(name = "users")
 @NoArgsConstructor
@@ -36,6 +37,11 @@ public class User  implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of();
+    }
+
+    @Override
+    public String getUsername() {
+        return this.name;
     }
 
 
