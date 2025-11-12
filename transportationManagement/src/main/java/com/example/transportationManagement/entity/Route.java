@@ -1,6 +1,7 @@
 package com.example.transportationManagement.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import java.util.*;
@@ -22,7 +23,7 @@ public class Route {
 
     private String transportMode; // BUS / TRAIN
 
-    @OneToMany(mappedBy = "route", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "route", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<RouteStop> stops = new ArrayList<>();
 
     @OneToMany(mappedBy = "route", cascade = CascadeType.ALL)

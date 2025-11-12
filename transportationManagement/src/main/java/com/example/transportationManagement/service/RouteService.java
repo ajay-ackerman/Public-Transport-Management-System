@@ -1,4 +1,6 @@
 package com.example.transportationManagement.service;
+
+import com.example.transportationManagement.dto.RouteResponseDto;
 import com.example.transportationManagement.entity.Route;
 import com.example.transportationManagement.entity.RouteStop;
 import com.example.transportationManagement.entity.Schedule;
@@ -6,10 +8,12 @@ import com.example.transportationManagement.repository.RouteRepository;
 import com.example.transportationManagement.repository.RouteStopRepository;
 import com.example.transportationManagement.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -19,33 +23,51 @@ public class RouteService {
     private final RouteRepository routeRepository;
     private final RouteStopRepository routeStopRepository;
     private final ScheduleRepository scheduleRepository;
+    private final ModelMapper modelMapper;
 
-    // Create / Update Route
-    public Route saveOrUpdateRoute(Route route) {
-        return routeRepository.save(route);
+    // ✅ Create or Update Route
+    public RouteResponseDto saveOrUpdateRoute(Route route) {
+        Route savedRoute = routeRepository.save(route);
+        return convertToDto(savedRoute);
     }
 
-    // Delete Route
+    // ✅ Get Route by ID
+    public RouteResponseDto getRouteById(Long id) {
+        Route route = routeRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Route not found with id: " + id));
+        return convertToDto(route);
+    }
+
+    // ✅ Delete Route
     public void deleteRoute(Long id) {
+        if (!routeRepository.existsById(id)) {
+            throw new IllegalArgumentException("Route not found with id: " + id);
+        }
         routeRepository.deleteById(id);
     }
 
-    // Get all Routes
-    public List<Route> getAllRoutes() {
-        return routeRepository.findAll();
+    // ✅ Get All Routes
+    public List<RouteResponseDto> getAllRoutes() {
+        return routeRepository.findAll().stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
     }
 
-    // Get all Active Routes
-    public List<Route> getActiveRoutes() {
-        return routeRepository.findByActiveTrue();
+    // ✅ Get Active Routes
+    public List<RouteResponseDto> getActiveRoutes() {
+        return routeRepository.findByActiveTrue().stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
     }
 
-    // Get Routes by Transport Type
-    public List<Route> getRoutesByTransportMode(String mode) {
-        return routeRepository.findByTransportMode(mode.toUpperCase());
+    // ✅ Get Routes by Transport Mode
+    public List<RouteResponseDto> getRoutesByTransportMode(String mode) {
+        return routeRepository.findByTransportMode(mode.toUpperCase()).stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
     }
 
-    // Add Stop to Route
+    // ✅ Add Stop to Route
     public RouteStop addStopToRoute(Long routeId, RouteStop stop) {
         Route route = routeRepository.findById(routeId)
                 .orElseThrow(() -> new IllegalArgumentException("Route not found"));
@@ -53,11 +75,23 @@ public class RouteService {
         return routeStopRepository.save(stop);
     }
 
-    // Add Schedule to Route
+    // ✅ Add Schedule to Route
     public Schedule addScheduleToRoute(Long routeId, Schedule schedule) {
         Route route = routeRepository.findById(routeId)
                 .orElseThrow(() -> new IllegalArgumentException("Route not found"));
         schedule.setRoute(route);
         return scheduleRepository.save(schedule);
+    }
+
+    // ✅ Convert Route → DTO using ModelMapper
+    private RouteResponseDto convertToDto(Route route) {
+        RouteResponseDto dto = modelMapper.map(route, RouteResponseDto.class);
+
+        // If you want stops as names only:
+        dto.setStops(route.getStops().stream()
+                .map(routeStop -> routeStop.getStop().getName()) // ✅ fetch Stop.name
+                .collect(Collectors.toList()));
+
+        return dto;
     }
 }
