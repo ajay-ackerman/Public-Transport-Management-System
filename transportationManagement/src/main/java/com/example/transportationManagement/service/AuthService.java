@@ -33,7 +33,7 @@ public class AuthService {
         );
         User user= (User) authentication.getPrincipal();
         String token = authUtil.generateAccessToken(user);
-
+        System.out.println("fghjfgfgggfggjfgfgkfkfhskfhksfhkfhaksfhkhkh"+token);
         return new AuthResponse(token, "");
     }
 
@@ -42,7 +42,6 @@ public class AuthService {
         User user=  userRepository.findByEmail(signupRequestDto.getEmail()).orElse(null);
 
         if(user != null) {
-            System.out.println("fgggggggggggggggg"+user);
             throw new BadCredentialsException("user already exist..!!");
         }
 

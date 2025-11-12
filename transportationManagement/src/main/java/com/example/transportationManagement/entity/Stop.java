@@ -21,6 +21,6 @@ public class Stop {
 
     private String address;
 
-    @OneToMany(mappedBy = "stop")
+    @OneToMany(mappedBy = "stop",fetch = FetchType.LAZY)
     private List<RouteStop> routeStops = new ArrayList<>();
 }
