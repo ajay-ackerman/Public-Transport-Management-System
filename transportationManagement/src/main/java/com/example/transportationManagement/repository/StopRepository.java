@@ -1,9 +1,9 @@
 package com.example.transportationManagement.repository;
 
-import com.example.transportationManagement.entity.Schedule;
+import com.example.transportationManagement.entity.Stop;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ScheduleRepository extends JpaRepository<Schedule,Long> {
+public interface StopRepository  extends JpaRepository<Stop, Long> {
 }

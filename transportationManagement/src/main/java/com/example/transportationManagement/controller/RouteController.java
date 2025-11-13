@@ -1,7 +1,9 @@
 package com.example.transportationManagement.controller;
 
 import com.example.transportationManagement.dto.RouteResponseDto;
+import com.example.transportationManagement.dto.RouteStopResponseDto;
 import com.example.transportationManagement.entity.Route;
+import com.example.transportationManagement.entity.RouteStop;
 import com.example.transportationManagement.service.RouteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -40,5 +42,11 @@ public class RouteController {
     public ResponseEntity<Void> deleteRoute(@PathVariable Long id) {
         routeService.deleteRoute(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{id}/stops")
+    public ResponseEntity<RouteStopResponseDto> addStopToRoute(@PathVariable Long id,@RequestBody RouteStopResponseDto stop){
+
+        return ResponseEntity.ok(routeService.addStopToRoute(id, stop)) ;
     }
 }

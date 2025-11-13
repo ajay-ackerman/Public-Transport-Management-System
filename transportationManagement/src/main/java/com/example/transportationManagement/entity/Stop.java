@@ -19,8 +19,8 @@ public class Stop {
 
     private String name;
 
-    private String address;
+    private double latitude;
+    private double longitude;
 
-    @OneToMany(mappedBy = "stop",fetch = FetchType.LAZY)
-    private List<RouteStop> routeStops = new ArrayList<>();
+
 }

@@ -1,12 +1,16 @@
 package com.example.transportationManagement.service;
 
 import com.example.transportationManagement.dto.RouteResponseDto;
+import com.example.transportationManagement.dto.RouteStopResponseDto;
 import com.example.transportationManagement.entity.Route;
 import com.example.transportationManagement.entity.RouteStop;
 import com.example.transportationManagement.entity.Schedule;
+import com.example.transportationManagement.entity.Stop;
 import com.example.transportationManagement.repository.RouteRepository;
 import com.example.transportationManagement.repository.RouteStopRepository;
 import com.example.transportationManagement.repository.ScheduleRepository;
+import com.example.transportationManagement.repository.StopRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -24,6 +28,7 @@ public class RouteService {
     private final RouteStopRepository routeStopRepository;
     private final ScheduleRepository scheduleRepository;
     private final ModelMapper modelMapper;
+    private final StopRepository stopRepository;
 
     // ✅ Create or Update Route
     public RouteResponseDto saveOrUpdateRoute(Route route) {
@@ -41,8 +46,10 @@ public class RouteService {
     // ✅ Delete Route
     public void deleteRoute(Long id) {
         if (!routeRepository.existsById(id)) {
+            System.out.println("helllloooooooo");
             throw new IllegalArgumentException("Route not found with id: " + id);
         }
+        System.out.println("huehueuehheuheueuh");
         routeRepository.deleteById(id);
     }
 
@@ -68,11 +75,28 @@ public class RouteService {
     }
 
     // ✅ Add Stop to Route
-    public RouteStop addStopToRoute(Long routeId, RouteStop stop) {
+    public RouteStopResponseDto addStopToRoute(Long routeId, RouteStopResponseDto dto) {
         Route route = routeRepository.findById(routeId)
                 .orElseThrow(() -> new IllegalArgumentException("Route not found"));
-        stop.setRoute(route);
-        return routeStopRepository.save(stop);
+        System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+        Stop stop = stopRepository.findById(dto.getStopId())
+                .orElseThrow(() -> new EntityNotFoundException("stop not found"));
+        System.out.println("bbbbbbbbbbbbbbbb");
+        RouteStop routeStop=  new RouteStop();
+        routeStop.setRoute(route);
+        routeStop.setStop(stop);
+        routeStop.setArrivalOffsetMinutes(dto.getArrivalOffsetMinutes());
+        routeStop.setStopOrder(dto.getStopOrder());
+        System.out.println("cccccccccccccccc");
+        RouteStop saved = routeStopRepository.save(routeStop);
+
+        return RouteStopResponseDto.builder()
+                .id(saved.getId())
+                .stopId(stop.getId())
+                .stopName(stop.getName())
+                .stopOrder(saved.getStopOrder())
+                .arrivalOffsetMinutes(saved.getArrivalOffsetMinutes())
+                .build();
     }
 
     // ✅ Add Schedule to Route
