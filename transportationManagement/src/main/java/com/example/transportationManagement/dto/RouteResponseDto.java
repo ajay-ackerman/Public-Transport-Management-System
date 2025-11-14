@@ -1,5 +1,6 @@
 package com.example.transportationManagement.dto;
 
+import com.example.transportationManagement.entity.Schedule;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,5 +17,6 @@ public class RouteResponseDto {
     private String name;
     private String transportMode;
     private boolean active;
-    private List<String> stops; // or List<StopResponse> if you want details
+    private List<String> stops;
+    private List<ScheduleResponseDto> schedules;
 }

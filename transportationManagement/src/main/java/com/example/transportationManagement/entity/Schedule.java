@@ -1,6 +1,7 @@
 package com.example.transportationManagement.entity;
 
 
+import com.example.transportationManagement.entity.type.DayOfWeek;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.*;
@@ -17,11 +18,15 @@ public class Schedule {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
+    @JoinColumn(name = "day_of_week_id")
+    private DayOfWeek dayOfWeek;
+
     @ManyToOne
     @JoinColumn(name = "route_id")
     private Route route;
 
-    private LocalTime startTime;
-    private LocalTime endTime;
+    private LocalTime departureTime;
+    private LocalTime arrivalTime;
 
 }
