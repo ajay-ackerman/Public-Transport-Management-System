@@ -1,5 +1,5 @@
 package com.example.transportationManagement.entity.type;
 
 public enum TripStatus {
-    PLANNED, ONGOING, COMPLETED, DELAYED, CANCELLED
+     ONGOING, COMPLETED, DELAYED, SCHEDULED , CANCELLED
 }

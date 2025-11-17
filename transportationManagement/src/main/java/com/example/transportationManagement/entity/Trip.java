@@ -19,6 +19,10 @@ public class Trip {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne()
+    @JoinColumn(name = "route_id")
+    private Route route;
+
     @ManyToOne
     @JoinColumn(name = "schedule_id")
     private Schedule schedule;
@@ -36,12 +40,14 @@ public class Trip {
     private LocalDateTime scheduledStart;
     private LocalDateTime scheduledEnd;
 
+    private LocalDateTime actualStart;
+    private LocalDateTime actualEnd;
+
     @Enumerated(EnumType.STRING)
-    private TripStatus status; // PLANNED, ONGOING, COMPLETED, DELAYED, CANCELLED
+    private TripStatus status = TripStatus.SCHEDULED; // PLANNED, ONGOING, COMPLETED, DELAYED, CANCELLED
 
     @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL)
     private List<Ticket> tickets = new ArrayList<>();
-
 
 }
 
