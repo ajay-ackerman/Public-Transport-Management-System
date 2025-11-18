@@ -23,8 +23,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@AllArgsConstructor
-@NoArgsConstructor
 @RequiredArgsConstructor
 public class TicketService {
     private final UserRepository userRepository;
@@ -40,7 +38,7 @@ public class TicketService {
                 .trip(trip)
                 .seatNo(dto.getSeatNo())
                 .fareAmount(dto.getFareAmount())
-                .ticketStatus(TicketStatus.BOOKED)
+                .status(TicketStatus.BOOKED)
                 .bookedAt(LocalDateTime.now())
                 .build();
 
@@ -51,7 +49,7 @@ public class TicketService {
     @Transactional
     public void cancelTicket(Long ticketID){
         Ticket ticket =ticketRepository.findById(ticketID).orElseThrow(()->new IllegalArgumentException("Ticket With ID doesn't exist...!"));
-        ticket.setTicketStatus(TicketStatus.CANCELLED);
+        ticket.setStatus(TicketStatus.CANCELLED);
     }
 
     public List<TicketHistoryDto> getTicketHistory(Long passengerId){

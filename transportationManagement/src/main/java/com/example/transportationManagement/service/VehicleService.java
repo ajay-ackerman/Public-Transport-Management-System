@@ -22,7 +22,7 @@ public class VehicleService {
         existing.setVehicleNo(vehicle.getVehicleNo());
         existing.setVehicleType(vehicle.getVehicleType());
         existing.setCapacity(vehicle.getCapacity());
-        existing.setvehicleStatus(vehicle.getVehicleStatus());
+        existing.setVehicleStatus(vehicle.getVehicleStatus());
         existing.setCurrentLatitude(vehicle.getCurrentLatitude());
         existing.setCurrentLongitude(vehicle.getCurrentLongitude());
 

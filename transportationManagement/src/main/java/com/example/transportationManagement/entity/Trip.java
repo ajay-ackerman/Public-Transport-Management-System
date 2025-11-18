@@ -13,6 +13,7 @@ import java.util.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString
 public class Trip {
 
     @Id
@@ -37,11 +38,11 @@ public class Trip {
 
     private LocalDate date;
 
-    private LocalDateTime scheduledStart;
-    private LocalDateTime scheduledEnd;
+    private LocalTime scheduledStart;
+    private LocalTime scheduledEnd;
 
-    private LocalDateTime actualStart;
-    private LocalDateTime actualEnd;
+    private LocalTime actualStart;
+    private LocalTime actualEnd;
 
     @Enumerated(EnumType.STRING)
     private TripStatus status = TripStatus.SCHEDULED; // PLANNED, ONGOING, COMPLETED, DELAYED, CANCELLED

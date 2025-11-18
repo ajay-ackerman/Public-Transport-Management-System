@@ -1,41 +1,111 @@
 package com.example.transportationManagement.service;
 
+import com.example.transportationManagement.dto.TripRequestDto;
+import com.example.transportationManagement.dto.TripResponseDto;
+import com.example.transportationManagement.entity.Schedule;
 import com.example.transportationManagement.entity.Trip;
+import com.example.transportationManagement.entity.User;
+import com.example.transportationManagement.entity.Vehicle;
 import com.example.transportationManagement.entity.type.TripStatus;
+import com.example.transportationManagement.repository.ScheduleRepository;
 import com.example.transportationManagement.repository.TripRepository;
+import com.example.transportationManagement.repository.UserRepository;
 import com.example.transportationManagement.repository.VehicleRespository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class TripService {
     private final TripRepository tripRepository;
-    private final VehicleRespository vehicleRespository;
+    private final VehicleRespository vehicleRepository;
+    private final ScheduleRepository scheduleRepository;
+    private final UserRepository userRepository;
+    private final ModelMapper modelMapper;
 
-    public Trip createTrip(Trip trip){
-        return tripRepository.save(trip);
+    @Transactional
+    public TripResponseDto createTrip(TripRequestDto dto) {
+
+        Schedule schedule = scheduleRepository.findById(dto.getScheduleId())
+                .orElseThrow(() -> new IllegalArgumentException("Schedule not found"));
+
+        Vehicle vehicle = vehicleRepository.findById(dto.getVehicleId())
+                .orElseThrow(() -> new IllegalArgumentException("Vehicle not found"));
+
+        User driver = userRepository.findById(dto.getDriverId())
+                .orElseThrow(() -> new IllegalArgumentException("Driver not found"));
+
+        Trip trip = Trip.builder()
+                .route(schedule.getRoute())
+                .schedule(schedule)
+                .vehicle(vehicle)
+                .driver(driver)
+                .date(dto.getTripDate())
+                .scheduledStart(schedule.getDepartureTime())
+                .scheduledEnd(schedule.getArrivalTime())
+                .status(TripStatus.SCHEDULED)
+                .build();
+
+        Trip savedTrip = tripRepository.save(trip);
+
+        return modelMapper.map(savedTrip, TripResponseDto.class);
     }
 
-    public Trip startTrip(Long id){
+    @Transactional
+    public TripResponseDto startTrip(Long id){
         Trip  trip =tripRepository.findById(id).orElseThrow(()->new IllegalArgumentException("trip not found ..!"));
-        trip.setTripStatus(TripStatus.ONGOING);
+        trip.setStatus(TripStatus.ONGOING);
         trip.setActualStart(LocalTime.now());
-        return tripRepository.save(trip);
+
+        return modelMapper.map(trip, TripResponseDto.class);
     }
 
-    public Trip endTrip(Long id ){
+    @Transactional
+    public TripResponseDto endTrip(Long id ){
         Trip  trip =tripRepository.findById(id).orElseThrow(()->new IllegalArgumentException("trip not found ..!"));
-        trip.setTripStatus(TripStatus.COMPLETED);
+        trip.setStatus(TripStatus.COMPLETED);
         trip.setActualEnd(LocalTime.now());
-        return tripRepository.save(trip);
+        return modelMapper.map(trip, TripResponseDto.class);
     }
 
-    public List<Trip> getVehicleTrip(Long vehicleId){
-        return tripRepository.findByVehicleId(vehicleId);
+    public List<TripResponseDto> getVehicleTrip(Long vehicleId){
+        List<Trip >trips=tripRepository.findByVehicleId(vehicleId);
+        return trips.stream().map(this::mapToDTO)
+                .collect(Collectors.toList());
     }
 
+//    private TripResponseDto mapToDTO(Trip trip) {
+//        return TripResponseDto.builder()
+//                .id(trip.getId())
+//
+//                .routeId(trip.getRoute().getId())
+//                .routeName(trip.getRoute().getName())
+//
+//                .scheduleId(trip.getSchedule().getId())
+//                .departureTime(trip.getSchedule().getDepartureTime().toString())
+//                .arrivalTime(trip.getSchedule().getArrivalTime().toString())
+//
+//                .vehicleId(trip.getVehicle().getId())
+//                .vehicleNo(trip.getVehicle().getVehicleNo())
+//
+//                .driverId(trip.getDriver().getId())
+//                .driverName(trip.getDriver().getName())
+//
+//                .tripDate(trip.getDate().toString())
+//                .scheduledStart(trip.getScheduledStart().toString())
+//                .scheduledEnd(trip.getScheduledEnd().toString())
+//
+//                .status(trip.getStatus())
+//
+//                .bookedSeats(trip.getTickets().size())
+//                .build();
+//    }
 }
