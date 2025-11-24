@@ -33,7 +33,6 @@ public class AuthService {
         );
         User user= (User) authentication.getPrincipal();
         String token = authUtil.generateAccessToken(user);
-        System.out.println("fghjfgfgggfggjfgfgkfkfhskfhksfhkfhaksfhkhkh"+token);
         return new AuthResponse(token, "");
     }
 
@@ -53,9 +52,8 @@ public class AuthService {
                 .password(passwordEncoder.encode(signupRequestDto.getPassword()))
                 .build();
 
-        System.out.println("Before save, user id: " + user.getId());
+
         user = userRepository.saveAndFlush(user);
-        System.out.println("After save, user id: " + user.getId());
 
 //        if(authProviderType == AuthProviderType.EMAIL){
 //            user.setPassword(passwordEncoder.encode(signupRequestDto.getPassword()));

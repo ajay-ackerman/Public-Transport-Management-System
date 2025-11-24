@@ -1,6 +1,7 @@
 package com.example.transportationManagement.security;
 
 
+import com.example.transportationManagement.entity.type.Role;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -35,7 +36,10 @@ public class WebSecurityConfig {
                 .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers( "/auth/**").permitAll()
-
+                        .requestMatchers( "/ticket/**").hasRole(Role.PASSENGER.name())
+                        .requestMatchers("/trip/**").hasRole(Role.DRIVER.name())
+                        .requestMatchers( "/ticket/**","/trip/**","/routes/**","/routestops/**","/stop/**","/schedule/**","/vehicles/**").hasRole(Role
+                                .ADMIN.name())
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 //                .oauth2Login(oAuth->oAuth.failureHandler(

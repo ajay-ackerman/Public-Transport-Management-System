@@ -48,10 +48,8 @@ public class RouteService {
     // Delete Route
     public void deleteRoute(Long id) {
         if (!routeRepository.existsById(id)) {
-            System.out.println("helllloooooooo");
             throw new IllegalArgumentException("Route not found with id: " + id);
-        }
-        System.out.println("huehueuehheuheueuh");
+        };
         routeRepository.deleteById(id);
     }
 

@@ -78,7 +78,7 @@ public class TripService {
 
     public List<TripResponseDto> getVehicleTrip(Long vehicleId){
         List<Trip >trips=tripRepository.findByVehicleId(vehicleId);
-        return trips.stream().map(this::mapToDTO)
+        return trips.stream().map((trip)->modelMapper.map(trip, TripResponseDto.class))
                 .collect(Collectors.toList());
     }
 
