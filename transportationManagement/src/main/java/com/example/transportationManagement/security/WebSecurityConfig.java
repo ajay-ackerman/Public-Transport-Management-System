@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -17,8 +18,10 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.io.IOException;
 
@@ -27,6 +30,7 @@ import java.io.IOException;
 public class WebSecurityConfig {
     private static final Logger log = LoggerFactory.getLogger(WebSecurityConfig.class);
     private final JwtAuthFilter jwtAuthFilter;
+    private final HandlerExceptionResolver handlerExceptionResolver;
 //    private final OAuth2SuccessHandler oAuth2SuccessHandler;
 
     @Bean
@@ -41,7 +45,14 @@ public class WebSecurityConfig {
                         .requestMatchers( "/ticket/**","/trip/**","/routes/**","/routestops/**","/stop/**","/schedule/**","/vehicles/**").hasRole(Role
                                 .ADMIN.name())
                         .anyRequest().authenticated())
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(exceptionHandlingConfigurer->
+                        exceptionHandlingConfigurer.accessDeniedHandler(new AccessDeniedHandler() {
+                            @Override
+                            public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
+                                handlerExceptionResolver.resolveException(request,response,null,accessDeniedException);
+                            }
+                        }));
 //                .oauth2Login(oAuth->oAuth.failureHandler(
 //                                (AuthenticationFailureHandler) (request, response, exception) -> {
 //                                    log.error("OAuth2 error "+ exception.getMessage());
