@@ -14,6 +14,7 @@ public class TripRequestDto
     private Long vehicleId;
     private Long driverId;
     private Long scheduleId;
-
+    private String Source;
+    private String destination;
     private LocalDate tripDate;
 }

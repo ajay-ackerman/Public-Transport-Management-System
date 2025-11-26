@@ -47,6 +47,8 @@ public class TripService {
                 .route(schedule.getRoute())
                 .schedule(schedule)
                 .vehicle(vehicle)
+                .source(dto.getSource())
+                .destination(dto.getDestination())
                 .driver(driver)
                 .date(dto.getTripDate())
                 .scheduledStart(schedule.getDepartureTime())
@@ -78,6 +80,12 @@ public class TripService {
 
     public List<TripResponseDto> getVehicleTrip(Long vehicleId){
         List<Trip >trips=tripRepository.findByVehicleId(vehicleId);
+        return trips.stream().map((trip)->modelMapper.map(trip, TripResponseDto.class))
+                .collect(Collectors.toList());
+    }
+
+    public List<TripResponseDto> searchTrips(String source, String destination, LocalDate date) {
+        List<Trip>  trips = tripRepository.findBySourceAndDestinationAndDate(source,destination,date);
         return trips.stream().map((trip)->modelMapper.map(trip, TripResponseDto.class))
                 .collect(Collectors.toList());
     }

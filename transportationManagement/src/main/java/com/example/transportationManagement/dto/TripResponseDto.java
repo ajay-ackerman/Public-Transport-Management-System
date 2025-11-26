@@ -18,8 +18,8 @@ public class TripResponseDto {
     private String routeName;
 
     private Long scheduleId;
-    private String departureTime;
-    private String arrivalTime;
+    private String actualStart;
+    private String actualEnd;
 
     private Long vehicleId;
     private String vehicleNo;

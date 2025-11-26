@@ -7,10 +7,12 @@ import com.example.transportationManagement.entity.Trip;
 import com.example.transportationManagement.service.TripService;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.Response;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -42,5 +44,11 @@ public class TripController {
     @GetMapping("/vehicle/{vehicleId}")
     public ResponseEntity<List<TripResponseDto>> getVehicleTrips(@PathVariable Long vehicleId) {
         return ResponseEntity.ok(tripService.getVehicleTrip(vehicleId));
+    }
+
+    @PreAuthorize("hasAuthority('TRIP_VIEW')")
+    @GetMapping("/search")
+    public ResponseEntity<List<TripResponseDto>> searchTrips(@RequestParam String destination,@RequestParam String source, @RequestParam @DateTimeFormat(iso= DateTimeFormat.ISO.DATE)LocalDate date) {
+        return ResponseEntity.ok(tripService.searchTrips(source,destination,date));
     }
 }

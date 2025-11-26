@@ -36,6 +36,12 @@ public class Trip {
     @JoinColumn(name = "driver_id")
     private User driver;
 
+    @Column(nullable = false)
+    private String source;
+
+    @Column(nullable = false)
+    private String destination;;
+    
     private LocalDate date;
 
     private LocalTime scheduledStart;

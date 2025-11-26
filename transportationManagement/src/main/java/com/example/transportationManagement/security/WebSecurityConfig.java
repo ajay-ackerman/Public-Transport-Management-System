@@ -27,7 +27,7 @@ import java.io.IOException;
 
 @Configuration
 @RequiredArgsConstructor
-public class WebSecurityConfig {
+public class    WebSecurityConfig {
     private static final Logger log = LoggerFactory.getLogger(WebSecurityConfig.class);
     private final JwtAuthFilter jwtAuthFilter;
     private final HandlerExceptionResolver handlerExceptionResolver;
@@ -40,10 +40,10 @@ public class WebSecurityConfig {
                 .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers( "/auth/**").permitAll()
+                        .requestMatchers( "/**").hasRole(Role.ADMIN.name())
                         .requestMatchers( "/ticket/**").hasRole(Role.PASSENGER.name())
                         .requestMatchers("/trip/**").hasRole(Role.DRIVER.name())
-                        .requestMatchers( "/ticket/**","/trip/**","/routes/**","/routestops/**","/stop/**","/schedule/**","/vehicles/**").hasRole(Role
-                                .ADMIN.name())
+
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(exceptionHandlingConfigurer->
