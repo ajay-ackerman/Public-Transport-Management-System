@@ -1,15 +1,13 @@
 package com.example.transportationManagement.service;
 
-import com.example.transportationManagement.dto.AuthRequest;
-import com.example.transportationManagement.dto.AuthResponse;
-import com.example.transportationManagement.dto.SignupResponse;
-import com.example.transportationManagement.dto.SignupRequest;
+import com.example.transportationManagement.dto.*;
 import com.example.transportationManagement.entity.User;
 import com.example.transportationManagement.entity.type.Role;
 import com.example.transportationManagement.repository.UserRepository;
 import com.example.transportationManagement.security.AuthUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,7 +23,7 @@ public class AuthService {
     private final AuthUtil authUtil;
     private final UserRepository userRepository;
     private  final PasswordEncoder passwordEncoder;
-
+    private  final ModelMapper modelMapper;
     public AuthResponse login(AuthRequest loginRequestDto) {
 
         Authentication authentication= authenticationManager.authenticate(
@@ -33,7 +31,8 @@ public class AuthService {
         );
         User user= (User) authentication.getPrincipal();
         String token = authUtil.generateAccessToken(user);
-        return new AuthResponse(token, "");
+        UserDto user1 = modelMapper.map(user, UserDto.class);
+        return new AuthResponse(token,user1);
     }
 
     public User signUpInternal(SignupRequest signupRequestDto){

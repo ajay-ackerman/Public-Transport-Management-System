@@ -20,7 +20,9 @@ public class RolePermissionMapping {
                     PermissionType.TRIP_CREATE,
                 PermissionType.TRIP_CANCEL,
 
-                PermissionType.VEHICLE_VIEW
+                PermissionType.VEHICLE_VIEW,
+                PermissionType.ROUTE_VIEW,
+                PermissionType.SCHEDULE_VIEW
         ));
 
         // PASSENGER — Booking & viewing

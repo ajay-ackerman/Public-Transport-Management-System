@@ -19,16 +19,16 @@ public class TicketControlller {
     private final TicketService ticketService;
 
     @PreAuthorize("hasAuthority('TICKET_BOOK')")
-    @PostMapping({"/book"})
+    @PostMapping("/book")
     public ResponseEntity<TicketResponseDto> bookTicket(@RequestBody TicketRequestDto dto){
         return ResponseEntity.ok(ticketService.bookTicket(dto));
     }
 
     @PreAuthorize("hasAuthority('TICKET_CANCEL')")
-    @PostMapping({"/{id}/cancel"})
+    @PostMapping("/{id}/cancel")
     public ResponseEntity<String> cancelTicket(@PathVariable Long ticketId){
         ticketService.cancelTicket(ticketId);
-        return ResponseEntity.ok("Ticket Cancelled Succesfully..!");
+        return ResponseEntity.ok("Ticket Cancelled Successfully..!");
     }
 
     @PreAuthorize("hasAuthority('TICKET_VIEW')")
