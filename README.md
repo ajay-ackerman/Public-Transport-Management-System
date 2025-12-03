@@ -12,7 +12,7 @@ A Spring Boot based RESTful backend application for managing public transportati
 | **Spring Boot 3** | Backend framework |
 | **Spring Security + JWT** | Authentication & Authorization |
 | **Spring Data JPA / Hibernate** | ORM & Repository layer |
-| **MySQL / PostgreSQL** | Database |
+| **PostgreSQL** | Database |
 | **Lombok** | Reduce boilerplate |
 | **React / React Query (Frontend)** | Client application (separate repo) |
 
