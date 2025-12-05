@@ -1,6 +1,7 @@
 package com.example.transportationManagement.service;
 
 import com.example.transportationManagement.dto.*;
+import com.example.transportationManagement.entity.RefreshToken;
 import com.example.transportationManagement.entity.User;
 import com.example.transportationManagement.entity.type.Role;
 import com.example.transportationManagement.repository.UserRepository;
@@ -24,6 +25,8 @@ public class AuthService {
     private final UserRepository userRepository;
     private  final PasswordEncoder passwordEncoder;
     private  final ModelMapper modelMapper;
+    private final RefreshTokenService refreshTokenService;
+
     public AuthResponse login(AuthRequest loginRequestDto) {
 
         Authentication authentication= authenticationManager.authenticate(
@@ -32,7 +35,8 @@ public class AuthService {
         User user= (User) authentication.getPrincipal();
         String token = authUtil.generateAccessToken(user);
         UserDto user1 = modelMapper.map(user, UserDto.class);
-        return new AuthResponse(token,user1);
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(user.getId());
+        return new AuthResponse(token,user1,refreshToken.getToken());
     }
 
     public User signUpInternal(SignupRequest signupRequestDto){

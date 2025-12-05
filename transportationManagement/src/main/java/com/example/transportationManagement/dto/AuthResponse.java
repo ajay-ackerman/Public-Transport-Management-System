@@ -14,4 +14,5 @@ import lombok.Setter;
 public class AuthResponse {
     private String token;
     private UserDto user;
+    private String refreshToken;
 }
