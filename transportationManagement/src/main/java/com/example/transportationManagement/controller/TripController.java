@@ -47,6 +47,12 @@ public class TripController {
     }
 
     @PreAuthorize("hasAuthority('TRIP_VIEW')")
+    @GetMapping
+    public ResponseEntity<List<TripResponseDto>> getAllTrips() {
+        return ResponseEntity.ok(tripService.getAllTrips());
+    }
+
+    @PreAuthorize("hasAuthority('TRIP_VIEW')")
     @GetMapping("/search")
     public ResponseEntity<List<TripResponseDto>> searchTrips(@RequestParam String destination,@RequestParam String source, @RequestParam @DateTimeFormat(iso= DateTimeFormat.ISO.DATE)LocalDate date) {
         return ResponseEntity.ok(tripService.searchTrips(source,destination,date));

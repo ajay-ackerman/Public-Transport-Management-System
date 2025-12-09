@@ -17,6 +17,6 @@ public class RouteResponseDto {
     private String name;
     private String transportMode;
     private boolean active;
-    private List<String> stops;
+    private List<RouteStopResponseDto> stops;
     private List<ScheduleResponseDto> schedules;
 }

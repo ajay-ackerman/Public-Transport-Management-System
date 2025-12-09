@@ -7,10 +7,7 @@ import com.example.transportationManagement.entity.Trip;
 import com.example.transportationManagement.entity.User;
 import com.example.transportationManagement.entity.Vehicle;
 import com.example.transportationManagement.entity.type.TripStatus;
-import com.example.transportationManagement.repository.ScheduleRepository;
-import com.example.transportationManagement.repository.TripRepository;
-import com.example.transportationManagement.repository.UserRepository;
-import com.example.transportationManagement.repository.VehicleRespository;
+import com.example.transportationManagement.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -86,6 +83,12 @@ public class TripService {
 
     public List<TripResponseDto> searchTrips(String source, String destination, LocalDate date) {
         List<Trip>  trips = tripRepository.findBySourceAndDestinationAndDate(source,destination,date);
+        return trips.stream().map((trip)->modelMapper.map(trip, TripResponseDto.class))
+                .collect(Collectors.toList());
+    }
+
+    public List<TripResponseDto> getAllTrips() {
+        List<Trip>  trips = tripRepository.findAll();
         return trips.stream().map((trip)->modelMapper.map(trip, TripResponseDto.class))
                 .collect(Collectors.toList());
     }

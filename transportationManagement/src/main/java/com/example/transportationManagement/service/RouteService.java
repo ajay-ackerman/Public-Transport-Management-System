@@ -129,9 +129,9 @@ public class RouteService {
         RouteResponseDto dto = modelMapper.map(route, RouteResponseDto.class);
 
         // If you want stops as names only:
-        dto.setStops(route.getStops().stream()
-                .map(routeStop -> routeStop.getStop().getName()) // ✅ fetch Stop.name
-                .collect(Collectors.toList()));
+//        dto.setStops(route.getStops().stream()
+//                .map(routeStop -> routeStop.getStops()) // ✅ fetch Stop.name
+//                .collect(Collectors.toList()));
 
         return dto;
     }
