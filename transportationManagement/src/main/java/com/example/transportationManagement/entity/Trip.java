@@ -2,6 +2,7 @@ package com.example.transportationManagement.entity;
 
 import com.example.transportationManagement.entity.type.TripStatus;
 import jakarta.persistence.*;
+import jdk.jfr.BooleanFlag;
 import lombok.*;
 import java.time.*;
 import java.util.*;
@@ -25,7 +26,7 @@ public class Trip {
     private Route route;
 
     @ManyToOne
-    @JoinColumn(name = "schedule_id")
+    @JoinColumn(name = "schedule_id", nullable = true)
     private Schedule schedule;
 
     @ManyToOne
@@ -43,6 +44,9 @@ public class Trip {
     private String destination;;
     
     private LocalDate date;
+
+    @BooleanFlag
+    private Boolean isScheduled;
 
     private LocalTime scheduledStart;
     private LocalTime scheduledEnd;

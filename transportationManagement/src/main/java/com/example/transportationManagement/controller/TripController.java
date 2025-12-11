@@ -22,6 +22,12 @@ public class TripController {
 
     private final TripService tripService;
 
+    @PreAuthorize("hasAuthority('TRIP_VIEW')")
+    @GetMapping
+    public ResponseEntity<List<TripResponseDto>> getAllTrips() {
+        return ResponseEntity.ok(tripService.getAllTrips());
+    }
+
     @PreAuthorize("hasAuthority('TRIP_CREATE')")
     @PostMapping
     public ResponseEntity<TripResponseDto> create(@RequestBody TripRequestDto trip) {
@@ -44,12 +50,6 @@ public class TripController {
     @GetMapping("/vehicle/{vehicleId}")
     public ResponseEntity<List<TripResponseDto>> getVehicleTrips(@PathVariable Long vehicleId) {
         return ResponseEntity.ok(tripService.getVehicleTrip(vehicleId));
-    }
-
-    @PreAuthorize("hasAuthority('TRIP_VIEW')")
-    @GetMapping
-    public ResponseEntity<List<TripResponseDto>> getAllTrips() {
-        return ResponseEntity.ok(tripService.getAllTrips());
     }
 
     @PreAuthorize("hasAuthority('TRIP_VIEW')")

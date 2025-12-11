@@ -17,6 +17,7 @@ public class TripResponseDto {
     private Long routeId;
     private String routeName;
 
+    private Boolean isScheduled;
     private Long scheduleId;
     private String actualStart;
     private String actualEnd;

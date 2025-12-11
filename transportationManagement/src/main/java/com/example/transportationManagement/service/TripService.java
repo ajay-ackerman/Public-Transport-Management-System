@@ -2,10 +2,7 @@ package com.example.transportationManagement.service;
 
 import com.example.transportationManagement.dto.TripRequestDto;
 import com.example.transportationManagement.dto.TripResponseDto;
-import com.example.transportationManagement.entity.Schedule;
-import com.example.transportationManagement.entity.Trip;
-import com.example.transportationManagement.entity.User;
-import com.example.transportationManagement.entity.Vehicle;
+import com.example.transportationManagement.entity.*;
 import com.example.transportationManagement.entity.type.TripStatus;
 import com.example.transportationManagement.repository.*;
 import jakarta.transaction.Transactional;
@@ -27,31 +24,50 @@ public class TripService {
     private final ScheduleRepository scheduleRepository;
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
+    private final RouteRepository routeRepository;
 
     @Transactional
     public TripResponseDto createTrip(TripRequestDto dto) {
-
-        Schedule schedule = scheduleRepository.findById(dto.getScheduleId())
-                .orElseThrow(() -> new IllegalArgumentException("Schedule not found"));
-
         Vehicle vehicle = vehicleRepository.findById(dto.getVehicleId())
                 .orElseThrow(() -> new IllegalArgumentException("Vehicle not found"));
 
         User driver = userRepository.findById(dto.getDriverId())
                 .orElseThrow(() -> new IllegalArgumentException("Driver not found"));
+        Trip trip=new Trip();
+        if(dto.getIsScheduled()) {
+            Schedule schedule = scheduleRepository.findById(dto.getScheduleId())
+                    .orElseThrow(() -> new IllegalArgumentException("Schedule not found"));
+             trip = Trip.builder()
+                    .route(schedule.getRoute())
+                    .isScheduled(true)
+                    .schedule(schedule)
+                    .vehicle(vehicle)
+                    .source(dto.getSource())
+                    .destination(dto.getDestination())
+                    .driver(driver)
+                    .date(dto.getTripDate())
+                    .scheduledStart(schedule.getDepartureTime())
+                    .scheduledEnd(schedule.getArrivalTime())
+                    .status(TripStatus.SCHEDULED)
+                    .build();
+        }
+        else {
+            Route route = routeRepository.findById(dto.getRouteId()).orElseThrow();
+             trip = Trip.builder()
+                    .route(route)
+                    .isScheduled(false)
+                    .schedule(null)
+                    .vehicle(vehicle)
+                    .source(dto.getSource())
+                    .destination(dto.getDestination())
+                    .driver(driver)
+                    .date(dto.getTripDate())
+                    .scheduledStart(dto.getScheduledStart())
+                    .scheduledEnd(dto.getScheduledEnd())
+                    .status(TripStatus.SCHEDULED)
+                    .build();
+        }
 
-        Trip trip = Trip.builder()
-                .route(schedule.getRoute())
-                .schedule(schedule)
-                .vehicle(vehicle)
-                .source(dto.getSource())
-                .destination(dto.getDestination())
-                .driver(driver)
-                .date(dto.getTripDate())
-                .scheduledStart(schedule.getDepartureTime())
-                .scheduledEnd(schedule.getArrivalTime())
-                .status(TripStatus.SCHEDULED)
-                .build();
 
         Trip savedTrip = tripRepository.save(trip);
 

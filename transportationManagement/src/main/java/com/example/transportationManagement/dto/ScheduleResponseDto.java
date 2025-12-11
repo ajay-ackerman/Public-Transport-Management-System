@@ -2,10 +2,7 @@ package com.example.transportationManagement.dto;
 
 import com.example.transportationManagement.entity.type.DayOfWeek;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalTime;
 
@@ -22,4 +19,6 @@ public class ScheduleResponseDto{
 
     @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "HH:mm")
     private LocalTime arrivalTime;
+
+    private String routeName;
 }
