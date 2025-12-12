@@ -109,6 +109,12 @@ public class TripService {
                 .collect(Collectors.toList());
     }
 
+    public List<TripResponseDto> getDriverTrip(Long driverId) {
+        List<Trip >trips=tripRepository.findByDriverId(driverId);
+        return trips.stream().map((trip)->modelMapper.map(trip, TripResponseDto.class))
+                .collect(Collectors.toList());
+    }
+
 //    private TripResponseDto mapToDTO(Trip trip) {
 //        return TripResponseDto.builder()
 //                .id(trip.getId())

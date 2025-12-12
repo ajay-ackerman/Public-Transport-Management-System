@@ -51,6 +51,11 @@ public class TripController {
     public ResponseEntity<List<TripResponseDto>> getVehicleTrips(@PathVariable Long vehicleId) {
         return ResponseEntity.ok(tripService.getVehicleTrip(vehicleId));
     }
+    @PreAuthorize("hasAuthority('TRIP_VIEW')")
+    @GetMapping("/driver/{driverId}")
+    public ResponseEntity<List<TripResponseDto>> getDriverTrips(@PathVariable Long driverId) {
+        return ResponseEntity.ok(tripService.getDriverTrip(driverId));
+    }
 
     @PreAuthorize("hasAuthority('TRIP_VIEW')")
     @GetMapping("/search")
