@@ -48,7 +48,7 @@ public class    WebSecurityConfig {
                 .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers( "/auth/**").permitAll()
-                        .requestMatchers( "/ticket/**","/trip/search/**").hasAnyRole(Role.PASSENGER.name(),Role.ADMIN.name())
+                        .requestMatchers( "/ticket/**","/trip/search/**","/seats/**"  ).hasAnyRole(Role.PASSENGER.name(),Role.ADMIN.name())
                         .requestMatchers("/trip/**").hasAnyRole(Role.DRIVER.name(),Role.ADMIN.name())
                         .requestMatchers( "/**").hasRole(Role.ADMIN.name())
                         .anyRequest().authenticated())

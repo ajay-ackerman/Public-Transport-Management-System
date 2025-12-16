@@ -8,19 +8,19 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class TicketResponseDto {
-    private Long id;
+    private Long ticketId;
     private String passengerName;
     private Long tripId;
-    private String seaNo;
     private Double fareAmount;
-    private TicketStatus ticketStatus;
-
+    private List<Integer> seatNumbers;
+    private TicketStatus status;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime bookedAt;
 }

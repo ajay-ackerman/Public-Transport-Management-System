@@ -1,13 +1,15 @@
 package com.example.transportationManagement.dto;
 
+import com.example.transportationManagement.entity.Seat;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
-public class TicketRequestDto {
+public class    TicketRequestDto {
     private Long passengerId;
     private Long tripId;
-    private String seatNo;
+    private List<Long> seatIds;
     private Double fareAmount;
 }

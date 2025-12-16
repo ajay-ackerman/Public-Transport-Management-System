@@ -1,12 +1,13 @@
 package com.example.transportationManagement.service;
 
-import com.example.transportationManagement.dto.TicketHistoryDto;
-import com.example.transportationManagement.dto.TicketRequestDto;
-import com.example.transportationManagement.dto.TicketResponseDto;
+import com.example.transportationManagement.dto.*;
+import com.example.transportationManagement.entity.Seat;
 import com.example.transportationManagement.entity.Ticket;
 import com.example.transportationManagement.entity.Trip;
 import com.example.transportationManagement.entity.User;
+import com.example.transportationManagement.entity.type.SeatStatus;
 import com.example.transportationManagement.entity.type.TicketStatus;
+import com.example.transportationManagement.repository.SeatRepository;
 import com.example.transportationManagement.repository.TicketRepository;
 import com.example.transportationManagement.repository.TripRepository;
 import com.example.transportationManagement.repository.UserRepository;
@@ -29,21 +30,40 @@ public class TicketService {
     private final TicketRepository ticketRepository;
     private final TripRepository tripRepository;
     private final ModelMapper modelMapper;
+    private final SeatRepository seatRepository;
 
-    public TicketResponseDto bookTicket(TicketRequestDto dto){
-        User passenger = userRepository.findById(dto.getPassengerId()).orElseThrow(()->new IllegalArgumentException("User not found...!!"));
-        Trip trip = tripRepository.findById(dto.getTripId()).orElseThrow(()->new IllegalArgumentException("Trip not found...!"));
+    @Transactional
+    public TicketResponseDto bookTicket(TicketRequestDto dto) {
+        User currentUser = userRepository.findById(dto.getPassengerId()).orElseThrow();
+        Trip trip = tripRepository.findById(dto.getTripId())
+                .orElseThrow(() -> new IllegalArgumentException("Trip not found"));
+
+        List<Seat> seats = seatRepository.lockAvailableSeats(
+                dto.getSeatIds(), dto.getTripId()
+        );
+
+        if (seats.size() != dto.getSeatIds().size()) {
+            throw new IllegalStateException("One or more seats already booked");
+        }
+
         Ticket ticket = Ticket.builder()
-                .passenger(passenger)
                 .trip(trip)
-                .seatNo(dto.getSeatNo())
-                .fareAmount(dto.getFareAmount())
+                .passenger(currentUser)
                 .status(TicketStatus.BOOKED)
                 .bookedAt(LocalDateTime.now())
                 .build();
 
-         ticket =ticketRepository.save(ticket);
-        return modelMapper.map(ticket, TicketResponseDto.class );
+        ticketRepository.save(ticket);
+
+        seats.forEach(seat -> {
+            seat.setStatus(SeatStatus.BOOKED);
+        });
+
+        seatRepository.saveAll(seats);
+
+        ticket.setSeats(seats);
+
+        return modelMapper.map(ticket, TicketResponseDto.class);
     }
 
     @Transactional

@@ -62,4 +62,11 @@ public class TripController {
     public ResponseEntity<List<TripResponseDto>> searchTrips(@RequestParam String destination,@RequestParam String source, @RequestParam @DateTimeFormat(iso= DateTimeFormat.ISO.DATE)LocalDate date) {
         return ResponseEntity.ok(tripService.searchTrips(source,destination,date));
     }
+
+    @PreAuthorize("hasAuthority('TRIP_CREATE')")
+    @DeleteMapping("/{tripId}")
+    public ResponseEntity<Void> deleteTrip(@PathVariable Long tripId){
+        tripService.deleteTrip(tripId);
+        return ResponseEntity.noContent().build();
+    }
 }

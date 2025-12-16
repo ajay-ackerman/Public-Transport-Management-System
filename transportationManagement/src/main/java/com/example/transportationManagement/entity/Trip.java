@@ -14,38 +14,37 @@ import java.util.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString
 public class Trip {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne()
-    @JoinColumn(name = "route_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "route_id", nullable = false)
     private Route route;
 
-    @ManyToOne
-    @JoinColumn(name = "schedule_id", nullable = true)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "schedule_id")
     private Schedule schedule;
 
-    @ManyToOne
-    @JoinColumn(name = "vehicle_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "vehicle_id", nullable = false)
     private Vehicle vehicle;
 
-    @ManyToOne
-    @JoinColumn(name = "driver_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "driver_id", nullable = false)
     private User driver;
 
     @Column(nullable = false)
     private String source;
 
     @Column(nullable = false)
-    private String destination;;
-    
+    private String destination;
+    @Column(nullable = false)
     private LocalDate date;
 
-    @BooleanFlag
+    @Column(nullable = false)
     private Boolean isScheduled;
 
     private LocalTime scheduledStart;
@@ -55,10 +54,11 @@ public class Trip {
     private LocalTime actualEnd;
 
     @Enumerated(EnumType.STRING)
-    private TripStatus status = TripStatus.SCHEDULED; // PLANNED, ONGOING, COMPLETED, DELAYED, CANCELLED
+    private TripStatus status;
 
     @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL)
     private List<Ticket> tickets = new ArrayList<>();
 
+    @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Seat> seats = new ArrayList<>();
 }
-

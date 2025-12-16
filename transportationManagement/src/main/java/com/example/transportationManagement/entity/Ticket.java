@@ -19,21 +19,29 @@ public class Ticket {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "passenger_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "passenger_id", nullable = false)
     private User passenger;
 
-    @ManyToOne
-    @JoinColumn(name = "trip_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "trip_id", nullable = false)
     private Trip trip;
 
-    private String seatNo;
+    @ManyToMany
+    @JoinTable(name = "ticket_seats",
+        joinColumns = @JoinColumn(name = "ticket_id"),
+            inverseJoinColumns = @JoinColumn(name = "seat_id"),
+            uniqueConstraints = {
+            @UniqueConstraint(columnNames = {"seat_id"})
+            }
+    )
+    private List<Seat> seats = new ArrayList<>();
+
     private double fareAmount;
 
     @Enumerated(EnumType.STRING)
     private TicketStatus status; // BOOKED, CANCELLED, USED
 
-    private LocalDateTime bookedAt = LocalDateTime.now();
-
-
+    private LocalDateTime bookedAt;
 }
+

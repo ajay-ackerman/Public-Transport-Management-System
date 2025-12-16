@@ -25,7 +25,7 @@ public class TripService {
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
     private final RouteRepository routeRepository;
-
+    private final SeatService seatService;
     @Transactional
     public TripResponseDto createTrip(TripRequestDto dto) {
         Vehicle vehicle = vehicleRepository.findById(dto.getVehicleId())
@@ -71,6 +71,8 @@ public class TripService {
 
         Trip savedTrip = tripRepository.save(trip);
 
+        seatService.createSeatsForTrip(savedTrip.getId(),40);
+
         return modelMapper.map(savedTrip, TripResponseDto.class);
     }
 
@@ -113,6 +115,10 @@ public class TripService {
         List<Trip >trips=tripRepository.findByDriverId(driverId);
         return trips.stream().map((trip)->modelMapper.map(trip, TripResponseDto.class))
                 .collect(Collectors.toList());
+    }
+
+    public void deleteTrip(Long tripId) {
+        tripRepository.deleteById(tripId);
     }
 
 //    private TripResponseDto mapToDTO(Trip trip) {
