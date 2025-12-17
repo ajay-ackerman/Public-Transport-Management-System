@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -17,7 +18,10 @@ import java.util.List;
 public class TicketResponseDto {
     private Long ticketId;
     private String passengerName;
-    private Long tripId;
+    private String source;
+    private String destination;
+    private LocalDate date;
+    private String vehicleNo;
     private Double fareAmount;
     private List<Integer> seatNumbers;
     private TicketStatus status;

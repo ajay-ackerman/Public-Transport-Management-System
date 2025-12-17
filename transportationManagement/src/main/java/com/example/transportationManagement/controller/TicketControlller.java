@@ -28,12 +28,12 @@ public class TicketControlller {
     @PostMapping("/{id}/cancel")
     public ResponseEntity<String> cancelTicket(@PathVariable Long ticketId){
         ticketService.cancelTicket(ticketId);
-        return ResponseEntity.ok("Ticket Cancelled Successfully..!");
-    }
+            return ResponseEntity.ok("Ticket Cancelled Successfully..!");
+        }
 
     @PreAuthorize("hasAuthority('TICKET_VIEW')")
     @GetMapping("history/{passengerId}")
-    public ResponseEntity<List<TicketHistoryDto>> getTicketHistory(@PathVariable Long passengerId){
+    public ResponseEntity<List<TicketResponseDto>> getTicketHistory(@PathVariable Long passengerId){
         return ResponseEntity.ok(ticketService.getTicketHistory(passengerId));
     }
 }

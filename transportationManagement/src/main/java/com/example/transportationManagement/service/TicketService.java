@@ -63,7 +63,17 @@ public class TicketService {
 
         ticket.setSeats(seats);
 
-        return modelMapper.map(ticket, TicketResponseDto.class);
+        TicketResponseDto ticketResponseDto= modelMapper.map(ticket, TicketResponseDto.class);
+        ticketResponseDto.setSeatNumbers(seats.stream().map(
+                seat -> {
+                     return seat.getSeatNumber();
+                }
+        ).toList());
+        ticketResponseDto.setSource(trip.getSource());
+        ticketResponseDto.setDestination(trip.getDestination());
+        ticketResponseDto.setDate(trip.getDate());
+        ticketResponseDto.setVehicleNo(trip.getVehicle().getVehicleNo());
+        return ticketResponseDto;
     }
 
     @Transactional
@@ -72,13 +82,21 @@ public class TicketService {
         ticket.setStatus(TicketStatus.CANCELLED);
     }
 
-    public List<TicketHistoryDto> getTicketHistory(Long passengerId){
-        return ticketRepository.findByPassengerId(passengerId)
-                .stream()
-                .map(
-                        t->modelMapper.map(t , TicketHistoryDto.class)
-                )
-                .collect(Collectors.toList());
+    public List<TicketResponseDto> getTicketHistory(Long passengerId){
+        List<Ticket> tickets= ticketRepository.findByPassengerId(passengerId);
+
+        return tickets.stream()
+                .map(t-> {
+                            Trip trip = t.getTrip();
+                            TicketResponseDto ticketResponseDto= modelMapper.map(t, TicketResponseDto.class);
+                            ticketResponseDto.setSource(trip.getSource());
+                            ticketResponseDto.setDestination(trip.getDestination());
+                            ticketResponseDto.setDate(trip.getDate());
+                            ticketResponseDto.setVehicleNo(trip.getVehicle().getVehicleNo());
+                            return ticketResponseDto;
+                        }
+                ).toList();
+
     }
 
 }

@@ -71,7 +71,7 @@ public class TripService {
 
         Trip savedTrip = tripRepository.save(trip);
 
-        seatService.createSeatsForTrip(savedTrip.getId(),40);
+        seatService.createSeatsForTrip(savedTrip.getId(),30);
 
         return modelMapper.map(savedTrip, TripResponseDto.class);
     }
