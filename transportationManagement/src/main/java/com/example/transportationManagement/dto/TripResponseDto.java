@@ -33,6 +33,8 @@ public class TripResponseDto {
     private String scheduledEnd;
 
     private TripStatus status;
+    private String Source;
+    private String destination;
 
     private int bookedSeats; // tickets.size()
 }
